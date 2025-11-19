@@ -1,3 +1,7 @@
+// @page HOME - Начална страница за нерегистрирани потребители
+// URL: http://localhost:3000/
+// Съдържание: Hero секция, регистрация, ценови планове, features, footer
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
