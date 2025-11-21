@@ -1,6 +1,2 @@
-[build]
-  command = "npm run build"
-  publish = ".next"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Deprecated - using Railway instead
+# See railway.json for deployment configuration

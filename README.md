@@ -1,8 +1,11 @@
 # SwingMe - Adult Dating Platform
 
-## 🌐 Live Demo
+## 🌐 Live Demo (Deploy в прогрес)
 
-**[🚀 Отвори приложението](https://joyful-paprenjak-567a9e.netlify.app)**
+### Стъпки за достъп:
+1. **На GitHub**: https://github.com/Niko5886/swingme
+2. **На Railway** (в прогрес): Ще бъде готов за 5-10 минути
+3. **Локално**: `npm install && npm run dev` → http://localhost:3000
 
 ---
 
