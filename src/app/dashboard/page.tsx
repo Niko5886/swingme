@@ -250,7 +250,7 @@ export default function DashboardPage() {
                 {isMessagesOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsMessagesOpen(false)} />
-                    <div className="absolute right-0 top-12 w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsMessagesOpen(false)}>
+                    <div className="absolute -right-32 sm:right-0 top-12 w-screen sm:w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsMessagesOpen(false)}>
                       <div className="px-4 py-2 border-b border-purple-500/20">
                         <h3 className="text-white font-semibold text-sm">Последни съобщения</h3>
                       </div>
@@ -298,7 +298,7 @@ export default function DashboardPage() {
                 {isContactsOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsContactsOpen(false)} />
-                    <div className="absolute right-0 top-12 w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsContactsOpen(false)}>
+                    <div className="absolute -right-32 sm:right-0 top-12 w-screen sm:w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsContactsOpen(false)}>
                       <div className="px-4 py-2 border-b border-purple-500/20">
                         <h3 className="text-white font-semibold text-sm">Контакти ({contacts.length})</h3>
                       </div>
@@ -322,10 +322,10 @@ export default function DashboardPage() {
               {/* Профил */}
               <div
                 onClick={() => router.push('/profile')}
-                className="flex items-center gap-2 bg-gradient-to-br from-purple-600/80 to-pink-600/80 border border-purple-500/40 shadow-lg rounded px-2 py-1 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105"
+                className="flex items-center gap-1 sm:gap-2 bg-gradient-to-br from-purple-600/80 to-pink-600/80 border border-purple-500/40 shadow-lg rounded px-1 sm:px-2 py-1 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105 min-w-0"
               >
-                <img src={user?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop'} alt="profile" className="w-8 h-8 rounded object-cover" />
-                <span className="text-white text-sm font-semibold">{user?.name}</span>
+                <img src={user?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop'} alt="profile" className="w-6 sm:w-8 h-6 sm:h-8 rounded object-cover flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-semibold text-white truncate">{user?.name}</span>
               </div>
               {/* Меню */}
               <div
@@ -340,7 +340,7 @@ export default function DashboardPage() {
                 </div>
                 {/* Етикет премахнат */}
                 {isMenuOpen && (
-                  <div className="absolute right-0 top-10 min-w-[180px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50">
+                  <div className="absolute -right-32 sm:right-0 top-10 min-w-[180px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50">
                     <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/profile'); }}>Управление на профила</button>
                     <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/events/create'); }}>Създаване на Event</button>
                     <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-red-600/30 transition" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>Излизане от профила</button>

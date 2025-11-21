@@ -202,8 +202,8 @@ export default function Home() {
       <nav className="sticky top-0 z-50 bg-black/30 backdrop-blur-md border-b border-purple-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Heart className="w-8 h-8 text-red-500 fill-red-500 animate-[heartbeat_1.5s_ease-in-out_infinite]" />
-            <span className="text-2xl font-bold text-white">SwingMe</span>
+            <Heart className="w-6 sm:w-8 h-6 sm:h-8 text-red-500 fill-red-500 animate-[heartbeat_1.5s_ease-in-out_infinite]" />
+            <span className="text-xl sm:text-2xl font-bold text-white truncate">SwingMe</span>
           </div>
           {/* removed static top links: За нас / Преглед / Цени per request */}
           <div className="hidden md:flex gap-8 text-white/80" />
