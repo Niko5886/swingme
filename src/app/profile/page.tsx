@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [isContactsOpen, setIsContactsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(3);
   const [unreadNotifications, setUnreadNotifications] = useState(74);
   
@@ -29,9 +30,17 @@ export default function ProfilePage() {
     { id: 2, name: 'Иван', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop', online: false, lastSeen: 'преди 10 мин' },
   ]);
 
+  const [notifications] = useState([
+    { id: 1, type: 'like', user: 'Мария, 28', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop', time: 'преди 5 мин', text: 'харесва твоя профил' },
+    { id: 2, type: 'like', user: 'Александра, 31', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop', time: 'преди 15 мин', text: 'харесва твоя профил' },
+    { id: 3, type: 'new_user', user: 'Кристина, 29', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=40&h=40&fit=crop', time: 'преди 1 час', text: 'нов потребител в София' },
+    { id: 4, type: 'match', user: 'Елена, 26', avatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=40&h=40&fit=crop', time: 'преди 2 часа', text: 'взаимно харесване! 💕' },
+    { id: 5, type: 'view', user: 'Ивана, 32', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop', time: 'преди 3 часа', text: 'посети твоя профил' },
+  ]);
+
   const [user] = useState({
-    name: 'Потребител',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop'
+    name: 'Николай',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop'
   });
   
   // Състояния за профила
@@ -144,7 +153,7 @@ export default function ProfilePage() {
                   )}
                   <MessageSquare className="w-6 h-6 text-white transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                <span className="text-xs text-gray-300 mt-1">Съобщения</span>
+                <Link href="/messages" className="text-xs text-gray-300 mt-1 hover:text-purple-300 transition">Съобщения</Link>
                 {isMessagesOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsMessagesOpen(false)} />
@@ -161,6 +170,9 @@ export default function ProfilePage() {
                           <p className="text-purple-200 text-xs line-clamp-2">{msg.text}</p>
                         </div>
                       ))}
+                      <Link href="/messages" className="block px-4 py-3 text-center text-purple-300 hover:text-white hover:bg-purple-600/30 text-sm font-medium transition">
+                        Виж всички съобщения →
+                      </Link>
                     </div>
                   </>
                 )}
@@ -168,13 +180,65 @@ export default function ProfilePage() {
 
               {/* Известия */}
               <div className="flex flex-col items-center relative cursor-pointer group">
-                <div className="relative p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50">
+                <div onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} className="relative p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50">
                   {unreadNotifications > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">{unreadNotifications}</span>
                   )}
                   <Star className="w-6 h-6 text-white transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <span className="text-xs text-gray-300 mt-1">Известия</span>
+                {isNotificationsOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)} />
+                    <div className="absolute right-0 top-12 w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto">
+                      <div className="px-4 py-3 border-b border-purple-500/20">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-white font-semibold text-sm">Известия</h3>
+                          <span className="text-purple-300 text-xs">{notifications.length} нови</span>
+                        </div>
+                      </div>
+                      
+                      {/* Статистика */}
+                      <div className="px-4 py-3 bg-purple-900/20 border-b border-purple-500/20">
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                          <div>
+                            <div className="text-purple-400 text-xs">Харесвания</div>
+                            <div className="text-white font-bold text-lg">12</div>
+                          </div>
+                          <div>
+                            <div className="text-purple-400 text-xs">Нови</div>
+                            <div className="text-white font-bold text-lg">8</div>
+                          </div>
+                          <div>
+                            <div className="text-purple-400 text-xs">Посещения</div>
+                            <div className="text-white font-bold text-lg">34</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {notifications.map((notif) => (
+                        <div key={notif.id} className="px-4 py-3 hover:bg-purple-600/30 cursor-pointer border-b border-purple-500/10 transition">
+                          <div className="flex gap-3">
+                            <img src={notif.avatar} alt={notif.user} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2 mb-1">
+                                <span className="text-white font-semibold text-sm">{notif.user}</span>
+                                <span className="text-purple-300 text-xs whitespace-nowrap">{notif.time}</span>
+                              </div>
+                              <p className="text-purple-200 text-xs">{notif.text}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      
+                      <div className="px-4 py-3 text-center border-t border-purple-500/20">
+                        <button className="text-purple-400 hover:text-purple-300 text-sm font-medium transition">
+                          Виж всички известия
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Контакти */}
@@ -219,32 +283,34 @@ export default function ProfilePage() {
               </div>
 
               {/* Меню икона */}
-              <div
-                className="flex flex-col items-center cursor-pointer relative group"
-                onClick={() => setIsMenuOpen((v) => !v)}
-                onMouseLeave={() => setIsMenuOpen(false)}
-              >
-                <div className="w-7 h-7 flex flex-col justify-center items-center p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110">
+              <div className="flex flex-col items-center cursor-pointer relative group">
+                <div 
+                  className="w-7 h-7 flex flex-col justify-center items-center p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110"
+                  onClick={() => setIsMenuOpen((v) => !v)}
+                >
                   <span className={`block w-6 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
                   <span className={`block w-6 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></span>
                   <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
                 </div>
                 <span className="text-xs text-gray-300 mt-1">Меню</span>
                 {isMenuOpen && (
-                  <div className="absolute right-0 top-10 min-w-[180px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50">
-                    <button
-                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition"
-                      onClick={() => { setIsMenuOpen(false); router.push('/dashboard'); }}
-                    >Начало</button>
-                    <button
-                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition"
-                      onClick={() => { setIsMenuOpen(false); router.push('/profile'); }}
-                    >Управление на профила</button>
-                    <button
-                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-red-600/30 transition"
-                      onClick={() => { setIsMenuOpen(false); handleLogout(); }}
-                    >Изход</button>
-                  </div>
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
+                    <div className="absolute right-0 top-10 min-w-[180px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50">
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition"
+                        onClick={() => { setIsMenuOpen(false); router.push('/dashboard'); }}
+                      >Начало</button>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition"
+                        onClick={() => { setIsMenuOpen(false); router.push('/settings'); }}
+                      >Управление на профила</button>
+                      <button
+                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-red-600/30 transition"
+                        onClick={() => { setIsMenuOpen(false); handleLogout(); }}
+                      >Изход</button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -285,185 +351,188 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {/* Основна информация */}
-            <div className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Основна информация
-              </h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Име */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Име</label>
-                  {isEditing ? (
-                    <input 
-                      type="text"
-                      value={profileData.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold">{profileData.name}</p>
-                  )}
-                </div>
-
-                {/* Възраст */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Възраст</label>
-                  {isEditing ? (
-                    <input 
-                      type="number"
-                      value={profileData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-purple-400" />
-                      {profileData.age} години
-                    </p>
-                  )}
-                </div>
-
-                {/* Град */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Град</label>
-                  {isEditing ? (
-                    <input 
-                      type="text"
-                      value={profileData.city}
-                      onChange={(e) => handleInputChange('city', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-purple-400" />
-                      {profileData.city}
-                    </p>
-                  )}
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Email</label>
-                  {isEditing ? (
-                    <input 
-                      type="email"
-                      value={profileData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-purple-400" />
-                      {profileData.email}
-                    </p>
-                  )}
-                </div>
-
-                {/* Телефон */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Телефон</label>
-                  {isEditing ? (
-                    <input 
-                      type="tel"
-                      value={profileData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-purple-400" />
-                      {profileData.phone}
-                    </p>
-                  )}
-                </div>
-
-                {/* Търся */}
-                <div>
-                  <label className="block text-purple-300 text-sm mb-2">Търся</label>
-                  {isEditing ? (
-                    <input 
-                      type="text"
-                      value={profileData.lookingFor}
-                      onChange={(e) => handleInputChange('lookingFor', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white font-semibold">{profileData.lookingFor}</p>
-                  )}
-                </div>
-
-                {/* Биография */}
-                <div className="md:col-span-2">
-                  <label className="block text-purple-300 text-sm mb-2">За мен</label>
-                  {isEditing ? (
-                    <textarea 
-                      value={profileData.bio}
-                      onChange={(e) => handleInputChange('bio', e.target.value)}
-                      rows={3}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400 resize-none"
-                    />
-                  ) : (
-                    <p className="text-white">{profileData.bio}</p>
-                  )}
-                </div>
-
-                {/* Интереси */}
-                <div className="md:col-span-2">
-                  <label className="block text-purple-300 text-sm mb-2">Интереси</label>
-                  {isEditing ? (
-                    <input 
-                      type="text"
-                      value={profileData.interests}
-                      onChange={(e) => handleInputChange('interests', e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
-                    />
-                  ) : (
-                    <p className="text-white">{profileData.interests}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Снимки */}
-            <div className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Camera className="w-5 h-5" />
-                  Моите снимки
+            {/* Основна информация и Снимки - Grid layout */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Основна информация */}
+              <div className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6 h-full">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Основна информация
                 </h2>
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition"
-                >
-                  <Upload className="w-4 h-4" />
-                  Качи снимка
-                </button>
-                <input 
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  className="hidden"
-                />
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {photos.map((photo, index) => (
-                  <div key={index} className="relative group">
-                    <img 
-                      src={photo} 
-                      alt={`Снимка ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-lg border-2 border-purple-500/30"
-                    />
-                    <button 
-                      onClick={() => handleDeletePhoto(index)}
-                      className="absolute top-2 right-2 p-1 bg-red-600 hover:bg-red-700 rounded-full opacity-0 group-hover:opacity-100 transition"
-                    >
-                      <X className="w-4 h-4 text-white" />
-                    </button>
+                <div className="space-y-3 overflow-y-auto max-h-[600px]">
+                  {/* Име */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Име</label>
+                    {isEditing ? (
+                      <input 
+                        type="text"
+                        value={profileData.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold">{profileData.name}</p>
+                    )}
                   </div>
-                ))}
+
+                  {/* Възраст */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Възраст</label>
+                    {isEditing ? (
+                      <input 
+                        type="number"
+                        value={profileData.age}
+                        onChange={(e) => handleInputChange('age', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-purple-400" />
+                        {profileData.age} години
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Град */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Град</label>
+                    {isEditing ? (
+                      <input 
+                        type="text"
+                        value={profileData.city}
+                        onChange={(e) => handleInputChange('city', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-purple-400" />
+                        {profileData.city}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Email</label>
+                    {isEditing ? (
+                      <input 
+                        type="email"
+                        value={profileData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-purple-400" />
+                        {profileData.email}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Телефон */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Телефон</label>
+                    {isEditing ? (
+                      <input 
+                        type="tel"
+                        value={profileData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-purple-400" />
+                        {profileData.phone}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Търся */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Търся</label>
+                    {isEditing ? (
+                      <input 
+                        type="text"
+                        value={profileData.lookingFor}
+                        onChange={(e) => handleInputChange('lookingFor', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white font-semibold">{profileData.lookingFor}</p>
+                    )}
+                  </div>
+
+                  {/* Биография */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">За мен</label>
+                    {isEditing ? (
+                      <textarea 
+                        value={profileData.bio}
+                        onChange={(e) => handleInputChange('bio', e.target.value)}
+                        rows={3}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400 resize-none"
+                      />
+                    ) : (
+                      <p className="text-white">{profileData.bio}</p>
+                    )}
+                  </div>
+
+                  {/* Интереси */}
+                  <div>
+                    <label className="block text-purple-300 text-sm mb-1">Интереси</label>
+                    {isEditing ? (
+                      <input 
+                        type="text"
+                        value={profileData.interests}
+                        onChange={(e) => handleInputChange('interests', e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white focus:outline-none focus:border-purple-400"
+                      />
+                    ) : (
+                      <p className="text-white">{profileData.interests}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Снимки */}
+              <div className="bg-gradient-to-br from-slate-900/90 to-purple-900/90 backdrop-blur-md border border-purple-500/30 rounded-xl p-6 h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Camera className="w-5 h-5" />
+                    Моите снимки
+                  </h2>
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition text-sm"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Качи
+                  </button>
+                  <input 
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-[600px]">
+                  {photos.map((photo, index) => (
+                    <div key={index} className="relative group">
+                      <img 
+                        src={photo} 
+                        alt={`Снимка ${index + 1}`}
+                        className="w-full h-40 object-cover rounded-lg border-2 border-purple-500/30"
+                      />
+                      <button 
+                        onClick={() => handleDeletePhoto(index)}
+                        className="absolute top-2 right-2 p-1 bg-red-600 hover:bg-red-700 rounded-full opacity-0 group-hover:opacity-100 transition"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

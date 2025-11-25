@@ -66,12 +66,22 @@ export default function DashboardPage() {
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
   const [isContactsOpen, setIsContactsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   // Modals
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTerminationOpen, setIsTerminationOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
+
+  // Notifications
+  const [notifications] = useState([
+    { id: 1, type: 'like', user: 'Ани_93', avatar: '👩', time: 'Преди 5 мин', text: 'хареса твоя профил' },
+    { id: 2, type: 'new', user: 'Иван_М', avatar: '👨', time: 'Преди 10 мин', text: 'нов потребител в района' },
+    { id: 3, type: 'like', user: 'Мария_Sofia', avatar: '👩', time: 'Преди 30 мин', text: 'хареса твоя профил' },
+    { id: 4, type: 'match', user: 'Георги_Пл', avatar: '👨', time: 'Преди 1 час', text: 'имате съвпадение' },
+    { id: 5, type: 'view', user: 'Елена_Varna', avatar: '👩', time: 'Преди 2 часа', text: 'видя твоя профил' }
+  ]);
 
   // Toasts
   const [forumToast, setForumToast] = useState(false);
@@ -166,6 +176,27 @@ export default function DashboardPage() {
         city: 'София',
         bio: 'Фотограф и креативна личност 📸',
         avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=600&fit=crop'
+      },
+      {
+        id: '13',
+        name: 'Мила, 28',
+        city: 'София',
+        bio: 'Танцьорка и любител на изкуството 💃',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=600&fit=crop'
+      },
+      {
+        id: '14',
+        name: 'Радина, 26',
+        city: 'Бургас',
+        bio: 'Модел и обичам морето 🌊',
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&h=600&fit=crop'
+      },
+      {
+        id: '15',
+        name: 'Кристина, 30',
+        city: 'Пловдив',
+        bio: 'Стилист и модна консултантка 👗',
+        avatar: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=500&h=600&fit=crop'
       }
     ]);
 
@@ -237,7 +268,7 @@ export default function DashboardPage() {
               <Heart className="w-8 h-8 text-red-500 fill-red-500 animate-[heartbeat_1.5s_ease-in-out_infinite]" />
               <span className="text-2xl font-bold text-white">SwingMe</span>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
               {/* Съобщения */}
               <div className="flex items-center relative cursor-pointer group">
                 <div onClick={() => setIsMessagesOpen(!isMessagesOpen)} className="relative p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50">
@@ -250,7 +281,7 @@ export default function DashboardPage() {
                 {isMessagesOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsMessagesOpen(false)} />
-                    <div className="absolute -right-32 sm:right-0 top-12 w-screen sm:w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsMessagesOpen(false)}>
+                    <div className="fixed sm:absolute right-0 top-12 sm:top-12 w-full sm:w-80 max-w-md bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto mx-2 sm:mx-0" onMouseLeave={() => setIsMessagesOpen(false)}>
                       <div className="px-4 py-2 border-b border-purple-500/20">
                         <h3 className="text-white font-semibold text-sm">Последни съобщения</h3>
                       </div>
@@ -280,14 +311,56 @@ export default function DashboardPage() {
                 )}
               </div>
               {/* Известия */}
-              <div className="flex items-center relative group cursor-pointer" onClick={() => unreadNotifications > 0 && setUnreadNotifications((n) => Math.max(0, n - 1))}>
-                <div className="relative p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50">
+              <div className="flex items-center relative cursor-pointer group">
+                <div onClick={() => setIsNotificationsOpen(!isNotificationsOpen)} className="relative p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50">
                   {unreadNotifications > 0 && (
                     <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold rounded px-1.5">{unreadNotifications}</span>
                   )}
                   <Star className="w-6 h-6 text-white transition-transform duration-300 group-hover:scale-110" />
                 </div>
-                {/* Етикет премахнат */}
+                {isNotificationsOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)} />
+                    <div className="fixed sm:absolute right-0 top-12 sm:top-12 w-full sm:w-80 max-w-md bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto mx-2 sm:mx-0" onMouseLeave={() => setIsNotificationsOpen(false)}>
+                      <div className="px-4 py-2 border-b border-purple-500/20">
+                        <h3 className="text-white font-semibold text-sm">Известия</h3>
+                      </div>
+                      <div className="px-4 py-2 border-b border-purple-500/20">
+                        <div className="grid grid-cols-3 gap-2 text-center">
+                          <div>
+                            <div className="text-pink-400 font-bold text-lg">12</div>
+                            <div className="text-purple-300 text-xs">харесвания</div>
+                          </div>
+                          <div>
+                            <div className="text-blue-400 font-bold text-lg">8</div>
+                            <div className="text-purple-300 text-xs">нови</div>
+                          </div>
+                          <div>
+                            <div className="text-green-400 font-bold text-lg">34</div>
+                            <div className="text-purple-300 text-xs">посещения</div>
+                          </div>
+                        </div>
+                      </div>
+                      {notifications.map((notif) => (
+                        <div key={notif.id} className="px-4 py-3 hover:bg-purple-500/10 border-b border-purple-500/10 cursor-pointer transition-colors">
+                          <div className="flex items-start gap-3">
+                            <div className="text-2xl">{notif.avatar}</div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-white text-sm font-medium truncate">{notif.user}</div>
+                              <div className="text-purple-300 text-xs">{notif.text}</div>
+                              <div className="text-purple-400 text-xs mt-1">{notif.time}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="px-4 py-2 text-center">
+                        <button className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                          Виж всички известия
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               {/* Контакти */}
               <div className="flex items-center relative cursor-pointer group">
@@ -298,7 +371,7 @@ export default function DashboardPage() {
                 {isContactsOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsContactsOpen(false)} />
-                    <div className="absolute -right-32 sm:right-0 top-12 w-screen sm:w-80 bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto" onMouseLeave={() => setIsContactsOpen(false)}>
+                    <div className="fixed sm:absolute right-0 top-12 sm:top-12 w-full sm:w-80 max-w-md bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 max-h-96 overflow-y-auto mx-2 sm:mx-0" onMouseLeave={() => setIsContactsOpen(false)}>
                       <div className="px-4 py-2 border-b border-purple-500/20">
                         <h3 className="text-white font-semibold text-sm">Контакти ({contacts.length})</h3>
                       </div>
@@ -322,29 +395,31 @@ export default function DashboardPage() {
               {/* Профил */}
               <div
                 onClick={() => router.push('/profile')}
-                className="flex items-center gap-1 sm:gap-2 bg-gradient-to-br from-purple-600/80 to-pink-600/80 border border-purple-500/40 shadow-lg rounded px-1 sm:px-2 py-1 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105 min-w-0"
+                className="flex items-center gap-1 sm:gap-2 bg-gradient-to-br from-purple-600/80 to-pink-600/80 border border-purple-500/40 shadow-lg rounded px-2 sm:px-3 py-1 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/50 hover:scale-105 max-w-[100px] sm:max-w-none"
               >
                 <img src={user?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop'} alt="profile" className="w-6 sm:w-8 h-6 sm:h-8 rounded object-cover flex-shrink-0" />
                 <span className="text-xs sm:text-sm font-semibold text-white truncate">{user?.name}</span>
               </div>
               {/* Меню */}
-              <div
-                className="flex items-center cursor-pointer relative group"
-                onClick={() => setIsMenuOpen((v) => !v)}
-                onMouseLeave={() => setIsMenuOpen(false)}
-              >
-                <div className="w-7 h-7 flex flex-col justify-center items-center p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110">
+              <div className="flex items-center cursor-pointer relative group">
+                <div 
+                  className="w-7 h-7 flex flex-col justify-center items-center p-2 rounded-lg transition-all duration-300 group-hover:bg-purple-500/20 group-hover:shadow-lg group-hover:shadow-purple-500/50 group-hover:scale-110"
+                  onClick={() => setIsMenuOpen((v) => !v)}
+                >
                   <span className={`block w-6 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                   <span className={`block w-6 h-0.5 bg-white mb-1 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
                   <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
                 </div>
                 {/* Етикет премахнат */}
                 {isMenuOpen && (
-                  <div className="absolute -right-32 sm:right-0 top-10 min-w-[180px] bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50">
-                    <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/profile'); }}>Управление на профила</button>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/events/create'); }}>Създаване на Event</button>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-red-600/30 transition" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>Излизане от профила</button>
-                  </div>
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
+                    <div className="fixed sm:absolute right-0 sm:right-0 top-12 sm:top-10 w-full sm:w-auto min-w-[180px] max-w-xs bg-gradient-to-br from-slate-900/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-2xl py-2 z-50 mx-2 sm:mx-0">
+                      <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/settings'); }}>Управление на профила</button>
+                      <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-purple-600/30 transition" onClick={() => { setIsMenuOpen(false); router.push('/events/create'); }}>Създаване на Event</button>
+                      <button className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-red-600/30 transition" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>Излизане от профила</button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -393,10 +468,7 @@ export default function DashboardPage() {
                   <div
                     key={user.id}
                     className="relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer group"
-                    onClick={() => {
-                      setSelectedUserId(user.id);
-                      setShowProfileModal(true);
-                    }}
+                    onClick={() => router.push(`/user/${user.id}`)}
                   >
                     {/* Снимка на фона */}
                     <div
@@ -453,60 +525,11 @@ export default function DashboardPage() {
               </div>
               
               {/* Статистики */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-6 sm:mt-8 max-w-2xl mx-auto">
-                <div className="bg-purple-500/10 border border-purple-400/20 rounded-lg p-2 sm:p-4 text-center">
-                  <p className="text-purple-300 text-[10px] sm:text-sm">Лайкове</p>
-                  <p className="text-white text-lg sm:text-2xl font-bold">{likedUsers.size}</p>
-                </div>
-                <div className="bg-purple-500/10 border border-purple-400/20 rounded-lg p-2 sm:p-4 text-center">
-                  <p className="text-purple-300 text-[10px] sm:text-sm">Съобщения</p>
-                  <p className="text-white text-lg sm:text-2xl font-bold">{messages.length}</p>
-                </div>
-                <div className="bg-purple-500/10 border border-purple-400/20 rounded-lg p-2 sm:p-4 text-center">
-                  <p className="text-purple-300 text-[10px] sm:text-sm">Всичко профили</p>
-                  <p className="text-white text-lg sm:text-2xl font-bold">{users.length}</p>
-                </div>
-              </div>
+              {/* Статистики премахнати по заявка */}
             </div>
           </div>
         </div>
 
-        {/* Footer */}
-        <footer className="border-t border-purple-500/20 py-2 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-3 mb-2 max-w-4xl mx-auto">
-              <div>
-                <h4 className="text-white font-semibold mb-1.5 text-xs">Правна информация</h4>
-                <ul className="space-y-0.5 text-purple-300 text-xs">
-                  <li><button onClick={() => setIsTermsOpen(true)} className="hover:text-purple-400 text-left w-full">Условия за ползване</button></li>
-                  <li><button onClick={() => setIsPrivacyOpen(true)} className="hover:text-purple-400 text-left w-full">Лични данни</button></li>
-                  <li><button onClick={() => setIsTerminationOpen(true)} className="hover:text-purple-400 text-left w-full">Прекратяване</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-white font-semibold mb-1.5 text-xs">Поддръжка</h4>
-                <ul className="space-y-0.5 text-purple-300 text-xs">
-                  <li><button onClick={() => setIsSupportOpen(true)} className="hover:text-purple-400 text-left w-full">Помощ</button></li>
-                  <li><button onClick={() => setForumToast(true)} className="hover:text-purple-400 text-left w-full">Еротичен форум</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-white font-semibold mb-1.5 text-xs">Общност</h4>
-                <ul className="space-y-0.5 text-purple-300 text-xs">
-                  <li><button onClick={() => setEventsToast(true)} className="hover:text-purple-400 text-left w-full">Събития</button></li>
-                  <li><button onClick={() => setClubsToast(true)} className="hover:text-purple-400 text-left w-full">Свингър клубове</button></li>
-                </ul>
-              </div>
-            </div>
-            <div className="border-t border-purple-500/20 pt-2 text-center text-purple-300 text-xs">
-              <div className="flex items-center justify-center gap-2">
-                <p>&copy; 2025 SwingMe. Всички права запазени.</p>
-                <span className="text-purple-500">|</span>
-                <p>Powered by N.Stoyanov</p>
-              </div>
-            </div>
-          </div>
-        </footer>
       </div>
 
       {/* Modals (компонентни) */}

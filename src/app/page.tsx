@@ -12,6 +12,7 @@ import { Heart, Users, Lock, MessageCircle, Search, Star } from 'lucide-react';
 export default function Home() {
   const router = useRouter();
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [isTerminationOpen, setIsTerminationOpen] = useState(false);
@@ -19,24 +20,28 @@ export default function Home() {
   const [forumToast, setForumToast] = useState(false);
   const [eventsToast, setEventsToast] = useState(false);
   const [clubsToast, setClubsToast] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<number | null>(null);
   
   const [signupData, setSignupData] = useState({ email: '', password: '', termsAccepted: false, ageConfirmed: false });
   const [signupError, setSignupError] = useState('');
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
   const [hoverPlanIndex, setHoverPlanIndex] = useState<number | null>(null);
   const [activePlanIndex, setActivePlanIndex] = useState<number | null>(null);
   const planHoverTimer = useRef<number | null>(null);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
   
   const [typedText, setTypedText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const fullText = 'Свържете се с хиляди потребители търсещи същото като вас';
+  const fullText = 'Свържете се с хиляди потребители';
 
   useEffect(() => {
     if (currentIndex < fullText.length) {
       const timeout = setTimeout(() => {
         setTypedText(fullText.slice(0, currentIndex + 1));
         setCurrentIndex(currentIndex + 1);
-      }, 100);
+      }, 80);
       return () => clearTimeout(timeout);
     } else {
       const cursorInterval = setInterval(() => {
@@ -63,6 +68,23 @@ export default function Home() {
     const t = setTimeout(() => setClubsToast(false), 3000);
     return () => clearTimeout(t);
   }, [clubsToast]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowScrollToTop(true);
+      } else {
+        setShowScrollToTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handlePlanMouseEnter = (index: number) => {
     setHoverPlanIndex(index);
@@ -113,6 +135,34 @@ export default function Home() {
     }
   };
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsLoginOpen(false);
+        // Насочваме към dashboard
+        router.push('/dashboard');
+      } else {
+        setLoginError(data.error || 'Грешка при влизане');
+      }
+    } catch (error) {
+      setLoginError('Грешка при свързване със сървъра');
+    }
+  };
+
   // Примерни профили
   const profiles = [
     {
@@ -120,28 +170,80 @@ export default function Home() {
       name: 'Ева, 28',
       location: 'София',
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop',
-      status: 'online'
+      status: 'online',
+      bio: 'Обичам приключенията и спонтанните срещи. Търся хора със сходни интереси за дискретни моменти.',
+      interests: 'Пътувания, Танци, Фитнес',
+      lookingFor: 'Дискретни срещи, Нови преживявания'
     },
     {
       id: 2,
       name: 'Мария, 26',
       location: 'Пловдив',
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop',
-      status: 'online'
+      status: 'online',
+      bio: 'Енергична и отворена към нови хора. Ценя автентичността и дискретността.',
+      interests: 'Музика, Изкуство, Кулинария',
+      lookingFor: 'Приятелства, Забавления'
     },
     {
       id: 3,
       name: 'Александра, 31',
       location: 'Варна',
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop',
-      status: 'offline'
+      status: 'offline',
+      bio: 'Професионалистка с вкус към луксозния живот. Търся качествени срещи.',
+      interests: 'Мода, Вино, Плаж',
+      lookingFor: 'Луксозни преживявания'
     },
     {
       id: 4,
       name: 'Йелена, 29',
       location: 'Бургас',
       image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=500&fit=crop',
-      status: 'online'
+      status: 'online',
+      bio: 'Свободен дух с любов към морето. Харесвам спонтанността и страстта.',
+      interests: 'Йога, Плуване, Медитация',
+      lookingFor: 'Релакс, Нови познанства'
+    },
+    {
+      id: 5,
+      name: 'Виктория, 27',
+      location: 'София',
+      image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop',
+      status: 'online',
+      bio: 'Амбициозна и любопитна. Винаги готова за ново предизвикателство.',
+      interests: 'Бизнес, Нощен живот, Спорт',
+      lookingFor: 'Интелигентни разговори'
+    },
+    {
+      id: 6,
+      name: 'Даниела, 30',
+      location: 'Русе',
+      image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop',
+      status: 'online',
+      bio: 'Романтична душа с желание за истински връзки. Ценя искреността.',
+      interests: 'Четене, Кино, Природа',
+      lookingFor: 'Дълбоки връзки'
+    },
+    {
+      id: 7,
+      name: 'Симона, 25',
+      location: 'Стара Загора',
+      image: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=500&fit=crop',
+      status: 'offline',
+      bio: 'Млада и жизнена. Обичам да се забавлявам и да срещам интересни хора.',
+      interests: 'Парти, Мода, Пътешествия',
+      lookingFor: 'Забавления, Приключения'
+    },
+    {
+      id: 8,
+      name: 'Николай Стоянов, 36',
+      location: 'Русе',
+      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop',
+      status: 'online',
+      bio: 'Спортист и предприемач. Ценя дискретността и качествените моменти.',
+      interests: 'Спорт, Пътувания, Бизнес',
+      lookingFor: 'Приключения, Нови познанства'
     },
   ];
 
@@ -197,21 +299,21 @@ export default function Home() {
         style={{ zIndex: -1 }}
       />
       
-    <div className="min-h-screen relative flex flex-col">
+    <div className="min-h-screen relative flex flex-col pb-8">
       {/* Навигация */}
       <nav className="sticky top-0 z-50 bg-black/30 backdrop-blur-md border-b border-purple-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Heart className="w-6 sm:w-8 h-6 sm:h-8 text-red-500 fill-red-500 animate-[heartbeat_1.5s_ease-in-out_infinite]" />
-            <span className="text-xl sm:text-2xl font-bold text-white truncate">SwingMe</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-bold text-white truncate">SwingMe</span>
           </div>
           {/* removed static top links: За нас / Преглед / Цени per request */}
           <div className="hidden md:flex gap-8 text-white/80" />
-          <div className="flex gap-3">
-            <Link href="/login" className="px-6 py-2 text-white hover:text-purple-400 transition font-medium">
+          <div className="flex gap-2 sm:gap-3">
+            <Link href="/login" className="px-3 sm:px-6 py-2 text-sm sm:text-base text-white hover:text-purple-400 transition font-medium">
               Вход
             </Link>
-            <Link href="/register" className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition">
+            <Link href="/register" className="px-3 sm:px-6 py-2 text-sm sm:text-base bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition">
               Регистрация
             </Link>
           </div>
@@ -223,7 +325,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight min-h-[2.5em] sm:min-h-[3em]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight min-h-[9rem] sm:min-h-[12rem] lg:min-h-[14rem]">
                 {typedText.split(' ').map((word, wordIndex) => (
                   <span key={wordIndex} className="inline-block mr-2">
                     {word.split('').map((char, charIndex) => {
@@ -248,14 +350,20 @@ export default function Home() {
               <p className="text-lg sm:text-xl text-purple-200 leading-relaxed">
                 SwingMe е най-дискретната платформа за възрастни за намиране на частни срещи и новите приключения. Свържете се с хиляди люде в търсене на същото като вас.
               </p>
-              <div className="flex gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                 <button
                   onClick={() => setIsSignupOpen(true)}
-                  className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition transform hover:scale-105"
+                  className="px-6 sm:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition transform hover:scale-105 text-sm sm:text-base"
                 >
                   Начало сега
                 </button>
-                <button className="px-8 py-3 border border-purple-400 text-purple-300 hover:bg-purple-400/10 rounded-lg font-semibold transition">
+                <button 
+                  onClick={() => {
+                    const featuresSection = document.getElementById('features');
+                    featuresSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="px-6 sm:px-8 py-3 border border-purple-400 text-purple-300 hover:bg-purple-400/10 rounded-lg font-semibold transition text-sm sm:text-base"
+                >
                   Научи повече
                 </button>
               </div>
@@ -274,6 +382,7 @@ export default function Home() {
                   {profiles.map((profile) => (
                     <div
                       key={profile.id}
+                      onClick={() => setSelectedProfile(profile.id)}
                       className="group relative overflow-hidden rounded-lg cursor-pointer transform transition hover:scale-105"
                     >
                       <div
@@ -286,7 +395,7 @@ export default function Home() {
                         <div className="flex items-center gap-1 mb-1">
                           <div
                             className={`w-2 h-2 rounded-full ${
-                              profile.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
+                              profile.status === 'online' ? 'bg-green-400' : 'bg-red-400'
                             }`}
                           ></div>
                           <span className="text-xs">{profile.status === 'online' ? 'Онлайн' : 'Офлайн'}</span>
@@ -417,58 +526,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-purple-500/20 py-6 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6 mb-6 max-w-4xl mx-auto">
-            {/* Колона 1 */}
-            <div>
-              <h4 className="text-white font-semibold mb-3 text-sm">Правна информация</h4>
-              <ul className="space-y-1.5 text-purple-300 text-xs">
-                <li><button onClick={() => setIsTermsOpen(true)} className="hover:text-purple-400 text-left w-full">Условия за ползване</button></li>
-                <li><button onClick={() => setIsPrivacyOpen(true)} className="hover:text-purple-400 text-left w-full">Идентификационни данни и защита на личните данни</button></li>
-                <li><button onClick={() => setIsTerminationOpen(true)} className="hover:text-purple-400 text-left w-full">Прекратяване на договори тук</button></li>
-                
-              </ul>
-            </div>
-            {/* Колона 2 */}
-            <div>
-              <h4 className="text-white font-semibold mb-3 text-sm">Поддръжка</h4>
-              <ul className="space-y-1.5 text-purple-300 text-xs">
-                <li><button onClick={() => setIsSupportOpen(true)} className="hover:text-purple-400 text-left w-full">Помощ и поддръжка</button></li>
-                <li><button onClick={() => setForumToast(true)} className="hover:text-purple-400 text-left w-full">Еротичен форум</button></li>
-        
-              </ul>
-            </div>
-            {/* Колона 3 */}
-            <div>
-              <h4 className="text-white font-semibold mb-3 text-sm">Общност</h4>
-              <ul className="space-y-1.5 text-purple-300 text-xs">
-                <li><button onClick={() => setEventsToast(true)} className="hover:text-purple-400 text-left w-full">Събития</button></li>
-                <li><button onClick={() => setClubsToast(true)} className="hover:text-purple-400 text-left w-full">Свингър клубове</button></li>
-                
-              </ul>
-            </div>
-            {/* Колона 4 - Временно закоментирана за бъдеща употреба */}
-            {/* <div>
-              <h4 className="text-white font-semibold mb-4">Платформа</h4>
-              <ul className="space-y-2 text-purple-300 text-sm">
-                <li><a href="#" className="hover:text-purple-400">Членове</a></li>
-                <li><a href="#" className="hover:text-purple-400">Групи</a></li>
-                <li><a href="#" className="hover:text-purple-400">Секс и еротика по региони</a></li>
-                <li><a href="#" className="hover:text-purple-400">Защита от фалшиви профили</a></li>
-              </ul>
-            </div> */}
-          </div>
-          <div className="border-t border-purple-500/20 pt-4 text-center text-purple-300 text-xs">
-            <div className="flex items-center justify-center gap-2">
-              <p>&copy; 2025 SwingMe. Всички права запазени.</p>
-              <span className="text-purple-500">|</span>
-              <p>Powered by N.Stoyanov</p>
-            </div>
-          </div>
-        </div>
-      </footer>
 
       {/* Signup Modal */}
       {isSignupOpen && (
@@ -549,12 +606,159 @@ export default function Home() {
               </button>
 
               <p className="text-center text-purple-300 text-sm">
-                Вече имате акаунт? <a href="#" className="text-purple-400 hover:text-purple-300 font-semibold">Влезте</a>
+                Вече имате акаунт? <button type="button" onClick={() => { setIsSignupOpen(false); setIsLoginOpen(true); }} className="text-purple-400 hover:text-purple-300 font-semibold">Влезте</button>
               </p>
             </form>
           </div>
         </div>
       )}
+
+      {/* Login Modal */}
+      {isLoginOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-xl shadow-2xl max-w-md w-full border border-purple-500/30 p-8">
+            <button
+              onClick={() => setIsLoginOpen(false)}
+              className="absolute top-4 right-4 text-purple-300 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold text-white mb-6">Влезте в акаунта си</h2>
+
+            {loginError && (
+              <div className="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-2 rounded-lg mb-4">
+                {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-white font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white placeholder-purple-300/50 focus:outline-none focus:border-purple-400 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">Парола</label>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                  required
+                  className="w-full px-4 py-2 rounded-lg bg-white/10 border border-purple-400/30 text-white placeholder-purple-300/50 focus:outline-none focus:border-purple-400 transition"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition mt-6"
+              >
+                Влезте
+              </button>
+
+              <p className="text-center text-purple-300 text-sm">
+                Нямате акаунт? <button type="button" onClick={() => { setIsLoginOpen(false); setIsSignupOpen(true); }} className="text-purple-400 hover:text-purple-300 font-semibold">Регистрирайте се</button>
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal - показва се само за нерегистрирани */}
+      {selectedProfile !== null && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-xl shadow-2xl max-w-2xl w-full border border-purple-500/30 relative overflow-hidden">
+            <button
+              onClick={() => setSelectedProfile(null)}
+              className="absolute top-4 right-4 z-10 text-purple-300 hover:text-white bg-black/30 rounded-full p-2"
+            >
+              ✕
+            </button>
+
+            {(() => {
+              const profile = profiles.find(p => p.id === selectedProfile);
+              if (!profile) return null;
+
+              return (
+                <>
+                  {/* Профилна снимка */}
+                  <div className="relative h-80">
+                    <div
+                      className="absolute inset-0 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${profile.image})` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                  </div>
+
+                  {/* Информация за профила */}
+                  <div className="p-8 relative">
+                    {/* Заглавие */}
+                    <div className="mb-6">
+                      <h2 className="text-3xl font-bold text-white mb-2">{profile.name}</h2>
+                      <div className="flex items-center gap-2 text-purple-300">
+                        <span>{profile.location}</span>
+                        <span>•</span>
+                        <div className="flex items-center gap-1">
+                          <div className={`w-2 h-2 rounded-full ${profile.status === 'online' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                          <span className="text-sm">{profile.status === 'online' ? 'Онлайн' : 'Офлайн'}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Замъглена информация с Lock иконка */}
+                    <div className="space-y-4 relative">
+                      {/* Overlay за замъгляване */}
+                      <div className="absolute inset-0 backdrop-blur-md bg-purple-900/20 z-10 rounded-lg flex items-center justify-center">
+                        <div className="text-center">
+                          <Lock className="w-16 h-16 text-purple-400 mx-auto mb-4" />
+                          <h3 className="text-xl font-bold text-white mb-2">Регистрирайте се за пълен достъп</h3>
+                          <p className="text-purple-200 mb-6">Вижте пълния профил и свържете се с {profile.name.split(',')[0]}</p>
+                          <button
+                            onClick={() => {
+                              setSelectedProfile(null);
+                              setIsSignupOpen(true);
+                            }}
+                            className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition transform hover:scale-105"
+                          >
+                            Регистрирайте се сега
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Замъглено съдържание */}
+                      <div className="filter blur-sm pointer-events-none select-none">
+                        <div>
+                          <h3 className="text-lg font-semibold text-white mb-2">За мен</h3>
+                          <p className="text-purple-200">{profile.bio}</p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-semibold text-white mb-2">Интереси</h3>
+                          <p className="text-purple-200">{profile.interests}</p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-semibold text-white mb-2">Търся</h3>
+                          <p className="text-purple-200">{profile.lookingFor}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
       {/* Terms Modal */}
       {isTermsOpen && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
@@ -707,6 +911,30 @@ export default function Home() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Scroll to Top Button */}
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 z-50 p-3 sm:p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 backdrop-blur-md border border-purple-400/30"
+          aria-label="Scroll to top"
+        >
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+        </button>
       )}
 
       <style jsx global>{`
