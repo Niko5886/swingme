@@ -2,7 +2,7 @@
 
 ## 🌐 Live Demo
 
-### **[🚀 Отвори приложението ТУКА](https://swingme-production.up.railway.app/dashboard)**
+### **[🚀 Отвори приложението ТУКА](https://swingme.netlify.app/)**
 
 ---
 
@@ -52,9 +52,9 @@ src/
 
 ## 🌐 Deployment
 
-Deploy-нато на **[Railway.app](https://swingme-production.up.railway.app)** с автоматичен CI/CD от GitHub.
+Deploy-нато на **[Netlify](https://swingme.netlify.app)** с автоматичен CI/CD от GitHub.
 
-Всеки `git push` към `main` автоматично обновява приложението на Railway.
+Всеки `git push` към `main` автоматично обновява приложението на Netlify.
 
 ---
 
